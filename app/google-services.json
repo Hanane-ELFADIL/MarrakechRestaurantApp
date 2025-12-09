@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "756346229956",
+    "firebase_url": "https://marrakechrestaurant-2297e-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "marrakechrestaurant-2297e",
+    "storage_bucket": "marrakechrestaurant-2297e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756346229956:android:e896faff0917eb6dd3e591",
+        "android_client_info": {
+          "package_name": "com.example.marrakechrestaurantapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756346229956-k8e37gh7l9ja9oue3kh6jvi5p3ouhrcm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG_EYVPsE3zJwho_SmYxiW23EC_XOrvfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756346229956-k8e37gh7l9ja9oue3kh6jvi5p3ouhrcm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
