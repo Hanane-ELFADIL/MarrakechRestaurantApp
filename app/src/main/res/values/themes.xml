@@ -2,12 +2,34 @@
 <resources>
 
     <!-- ========== THÈME PRINCIPAL (BASE) ========== -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.MarrakechRestaurantApp"
+        parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
         <item name="colorPrimary">@color/primary_red</item>
         <item name="colorPrimaryDark">@color/primary_red_dark</item>
-        <item name="colorAccent">@color/accent_yellow</item>
+<!--        <item name="colorAccent">@color/accent_yellow</item>-->
         <item name="android:statusBarColor">@color/primary_red_dark</item>
         <item name="android:windowBackground">@color/background_light</item>
+
+        <!-- Couleurs du texte -->
+        <item name="android:textColorPrimary">#333333</item>
+        <item name="android:textColorSecondary">#666666</item>
+
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">#FFFFFF</item>
     </style>
+
+    <style name="Theme.Marrakech.Material" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#E53935</item>
+        <item name="colorPrimaryVariant">#B71C1C</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+
+        <item name="colorSecondary">#FFC107</item>
+        <item name="colorOnSecondary">#000000</item>
+
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#000000</item>
+    </style>
+
 
 </resources>

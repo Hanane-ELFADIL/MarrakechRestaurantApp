@@ -13,7 +13,12 @@
           "package_name": "com.example.marrakechrestaurantapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "756346229956-k8e37gh7l9ja9oue3kh6jvi5p3ouhrcm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBG_EYVPsE3zJwho_SmYxiW23EC_XOrvfI"
@@ -21,7 +26,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756346229956-k8e37gh7l9ja9oue3kh6jvi5p3ouhrcm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_favoris"
+        android:title="Favoris"/>
+
+    <item
+        android:id="@+id/nav_historique"
+        android:title="Historique"/>
+
+    <item
+        android:id="@+id/nav_deconnexion"
+        android:title="Se déconnecter"/>
+
+</menu>
