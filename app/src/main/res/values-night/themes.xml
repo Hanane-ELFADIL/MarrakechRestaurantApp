@@ -1,9 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Theme pour le mode sombre -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#E53935</item>
-        <item name="colorPrimaryDark">#C62828</item>
-        <item name="colorAccent">#E53935</item>
-        <item name="android:statusBarColor">#E53935</item>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MarrakechRestaurantApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
 </resources>

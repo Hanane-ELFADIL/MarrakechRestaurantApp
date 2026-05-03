@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">MarrakechRestaurantApp</string>
+    <string name="s_inscrire">S\'inscrire</string>
+    <string name="plat">🍽️</string>
+    <string name="restaurant_marrakech">Restaurant Marrakech</string>
+    <string name="d_couvrez_les_saveurs_de_marrakech">Découvrez les saveurs de Marrakech</string>
+    <string name="connexion">Connexion</string>
+    <string name="email">Email</string>
+    <string name="mot_de_passe">Mot de passe</string>
+    <string name="mot_de_passe_oubli">Mot de passe oublié ?</string>
+    <string name="se_connecter">Se connecter</string>
+    <string name="pas_encore_de_compte">Pas encore de compte ?</string>
+    <string name="logo_desc">Icône du restaurant</string>
+    <string name="email_input_desc">Champ email</string>
+    <string name="password_input_desc">Champ mot de passe</string>
+    <string name="vos_restaurants_et_plats_pr_f_r_s">Vos restaurants et plats préférés</string>
+
 </resources>

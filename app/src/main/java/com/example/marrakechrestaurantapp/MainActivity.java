@@ -2,25 +2,22 @@ package com.example.marrakechrestaurantapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.marrakechrestaurantapp.adapters.RestaurantAdapter;
-import com.example.marrakechrestaurantapp.models.Restaurant;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,155 +32,286 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private ImageView btnMenu;
-    private CardView btnProfile, btnPanier;
-    private EditText searchBar;
-    private RecyclerView recyclerRestaurants;
+    private ImageView btnMenu, btnClearSearch;
+    private View btnCart;
+    private TextView tvCartBadge, tvEmptyMessage, tvUserName, tvUserEmail;
+    private EditText etSearch;
+    private RecyclerView rvRestaurants;
+    private FloatingActionButton fabChatbot;
+
+    // Déclaration des vues du panier
+    private ImageView iconPanier;
+    private TextView badgePanier;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference databaseRef;
-    private FirebaseUser currentUser;
+    private DatabaseReference databaseReference;
 
+    private RestaurantAdapter restaurantAdapter;
     private List<Restaurant> restaurantList;
-    private RestaurantAdapter adapter;
-
-    private TextView navUserName, navUserEmail;
+    private List<Restaurant> filteredList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("MainActivity", "onCreate démarré");
-
-        // Firebase
+        // Initialisation Firebase
         mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-        databaseRef = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("restaurants");
 
-        if (currentUser == null) {
-            redirectToLogin();
-            return;
+        // Initialisation des vues APRÈS setContentView
+        initViews();
+
+        // Afficher les infos utilisateur dans la sidebar
+        if (currentUser != null) {
+            String email = currentUser.getEmail();
+            tvUserEmail.setText(email);
+
+            String name = email != null ? email.split("@")[0] : "Utilisateur";
+            tvUserName.setText(name);
         }
 
-        initViews();
-        setupNavigationDrawer();
-        loadUserInfo();
-        loadRestaurants();
-        setupClickListeners();
+        // Configuration du RecyclerView
+        restaurantList = new ArrayList<>();
+        filteredList = new ArrayList<>();
+        restaurantAdapter = new RestaurantAdapter(this, filteredList);
+        rvRestaurants.setLayoutManager(new LinearLayoutManager(this));
+        rvRestaurants.setAdapter(restaurantAdapter);
 
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    finish();
-                }
-            }
-        });
+        // Charger les restaurants
+        loadRestaurants();
+
+        // Setup des listeners
+        setupListeners();
     }
 
+    /**
+     * Initialise toutes les vues
+     */
     private void initViews() {
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
-        btnMenu = findViewById(R.id.btn_menu);
-        btnProfile = findViewById(R.id.btn_profile);
-        btnPanier = findViewById(R.id.btn_panier);
-        searchBar = findViewById(R.id.search_bar);
-        recyclerRestaurants = findViewById(R.id.recycler_restaurants);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        btnMenu = findViewById(R.id.btnMenu);
+        btnCart = findViewById(R.id.btnCart);
+        tvCartBadge = findViewById(R.id.tvCartBadge);
+        etSearch = findViewById(R.id.etSearch);
+        btnClearSearch = findViewById(R.id.btnClearSearch);
+        rvRestaurants = findViewById(R.id.rvRestaurants);
+        tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
+        tvUserName = findViewById(R.id.tvUserName);
+        tvUserEmail = findViewById(R.id.tvUserEmail);
+        fabChatbot = findViewById(R.id.fabChatbot);
 
-        recyclerRestaurants.setLayoutManager(new LinearLayoutManager(this));
-        restaurantList = new ArrayList<>();
+        // Initialisation des vues du panier
+        iconPanier = findViewById(R.id.iconPanier);
+        badgePanier = findViewById(R.id.badgePanier);
+    }
 
-        adapter = new RestaurantAdapter(this, restaurantList, restaurant -> {
-            Intent intent = new Intent(MainActivity.this, RestaurantDetailActivity.class);
-            intent.putExtra("restaurantId", restaurant.restaurantId);
-            intent.putExtra("restaurantName", restaurant.name);
-            intent.putExtra("restaurantImage", restaurant.imageUrl);
+    /**
+     * Configure tous les listeners
+     */
+    private void setupListeners() {
+        // Menu hamburger - ouvrir la sidebar
+        btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        // Bouton panier (le RelativeLayout parent)
+        btnCart.setOnClickListener(v -> {
+            Intent intent = new Intent(this, PanierActivity.class);
             startActivity(intent);
         });
 
-        recyclerRestaurants.setAdapter(adapter);
+        // Icône panier individuelle (au cas où)
+        if (iconPanier != null) {
+            iconPanier.setOnClickListener(v -> {
+                Intent intent = new Intent(this, PanierActivity.class);
+                startActivity(intent);
+            });
+        }
 
-        View headerView = navigationView.getHeaderView(0);
-        navUserName = headerView.findViewById(R.id.nav_user_name);
-        navUserEmail = headerView.findViewById(R.id.nav_user_email);
-    }
+        // Bouton Chatbot
+        fabChatbot.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
+            startActivity(intent);
+        });
 
-    private void setupNavigationDrawer() {
-        btnMenu.setOnClickListener(v ->
-                drawerLayout.openDrawer(GravityCompat.START)
-        );
+        // Gestion de la recherche
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-        navigationView.setNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_deconnexion) {
-                logout();
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterRestaurants(s.toString());
+                btnClearSearch.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Bouton clear search
+        btnClearSearch.setOnClickListener(v -> {
+            etSearch.setText("");
+            btnClearSearch.setVisibility(View.GONE);
+        });
+
+        // Menu items de la sidebar
+        findViewById(R.id.menuProfile).setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
+            startActivity(new Intent(MainActivity.this, ProfileUserActivity.class));
+        });
+
+        findViewById(R.id.menuFavorites).setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            startActivity(new Intent(MainActivity.this, FavoriteActivity.class));
+        });
+
+        findViewById(R.id.menuHistory).setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            startActivity(new Intent(MainActivity.this, HistoriqueCommandesActivity.class));
+        });
+
+        findViewById(R.id.menuLogout).setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            logoutUser();
         });
     }
 
-    private void setupClickListeners() {
-        btnProfile.setOnClickListener(v ->
-                Toast.makeText(this, "Profil", Toast.LENGTH_SHORT).show()
-        );
+    /**
+     * Met à jour le badge du panier
+     */
+    private void updatePanierBadge() {
+        if (badgePanier == null) return;
 
-        btnPanier.setOnClickListener(v ->
-                Toast.makeText(this, "Panier", Toast.LENGTH_SHORT).show()
-        );
-    }
-
-    private void loadUserInfo() {
-        if (currentUser != null && currentUser.getEmail() != null) {
-            navUserEmail.setText(currentUser.getEmail());
-            navUserName.setText(currentUser.getEmail().split("@")[0]);
+        int nombreArticles = PanierManager.getInstance().getNombreArticles();
+        if (nombreArticles > 0) {
+            badgePanier.setVisibility(View.VISIBLE);
+            badgePanier.setText(String.valueOf(nombreArticles));
+        } else {
+            badgePanier.setVisibility(View.GONE);
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updatePanierBadge();
+    }
+
+    /**
+     * Charge les restaurants depuis Firebase
+     */
     private void loadRestaurants() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                restaurantList.clear();
 
-        databaseRef.child("restaurants")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                if (snapshot.exists()) {
+                    for (DataSnapshot restaurantSnapshot : snapshot.getChildren()) {
+                        String id = restaurantSnapshot.getKey();
+                        String name = restaurantSnapshot.child("name").getValue(String.class);
+                        String category = restaurantSnapshot.child("category").getValue(String.class);
+                        String description = restaurantSnapshot.child("description").getValue(String.class);
 
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // Utiliser "imageName" au lieu de "imageUrl"
+                        String imageName = restaurantSnapshot.child("imageName").getValue(String.class);
 
-                        restaurantList.clear();
+                        Integer deliveryTime = restaurantSnapshot.child("deliveryTime").getValue(Integer.class);
+                        Double rating = restaurantSnapshot.child("rating").getValue(Double.class);
+                        Boolean isOpen = restaurantSnapshot.child("isOpen").getValue(Boolean.class);
 
-                        for (DataSnapshot data : snapshot.getChildren()) {
+                        if (deliveryTime == null) deliveryTime = 30;
+                        if (rating == null) rating = 4.0;
+                        if (isOpen == null) isOpen = false;
 
-                            Restaurant r = data.getValue(Restaurant.class);
-
-                            if (r != null) {
-                                r.restaurantId = data.getKey();
-                                restaurantList.add(r);
-                                Log.e("FIREBASE_OK", "Restaurant chargé : " + r.name);
-                            }
-                        }
-
-                        adapter.notifyDataSetChanged();
+                        Restaurant restaurant = new Restaurant(
+                                id, name, category, description,
+                                imageName,
+                                deliveryTime, rating, isOpen
+                        );
+                        restaurantList.add(restaurant);
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("FIREBASE_ERROR", error.getMessage());
+                    // Appliquer le filtre actuel
+                    filterRestaurants(etSearch.getText().toString());
+
+                    if (filteredList.isEmpty() && etSearch.getText().toString().isEmpty()) {
+                        tvEmptyMessage.setVisibility(View.VISIBLE);
+                        rvRestaurants.setVisibility(View.GONE);
+                    } else {
+                        tvEmptyMessage.setVisibility(View.GONE);
+                        rvRestaurants.setVisibility(View.VISIBLE);
                     }
-                });
+                } else {
+                    tvEmptyMessage.setVisibility(View.VISIBLE);
+                    rvRestaurants.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this,
+                        "Erreur: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    /**
+     * Filtre les restaurants selon la recherche
+     */
+    private void filterRestaurants(String query) {
+        filteredList.clear();
 
-    private void logout() {
+        if (query.isEmpty()) {
+            filteredList.addAll(restaurantList);
+        } else {
+            String lowerCaseQuery = query.toLowerCase();
+            for (Restaurant restaurant : restaurantList) {
+                if (restaurant.getName() != null &&
+                        restaurant.getName().toLowerCase().contains(lowerCaseQuery)) {
+                    filteredList.add(restaurant);
+                } else if (restaurant.getCategory() != null &&
+                        restaurant.getCategory().toLowerCase().contains(lowerCaseQuery)) {
+                    filteredList.add(restaurant);
+                } else if (restaurant.getDescription() != null &&
+                        restaurant.getDescription().toLowerCase().contains(lowerCaseQuery)) {
+                    filteredList.add(restaurant);
+                }
+            }
+        }
+
+        restaurantAdapter.notifyDataSetChanged();
+
+        if (filteredList.isEmpty() && !query.isEmpty()) {
+            tvEmptyMessage.setText("Aucun résultat pour \"" + query + "\"");
+            tvEmptyMessage.setVisibility(View.VISIBLE);
+            rvRestaurants.setVisibility(View.GONE);
+        } else {
+            tvEmptyMessage.setVisibility(View.GONE);
+            rvRestaurants.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Déconnecte l'utilisateur
+     */
+    private void logoutUser() {
         mAuth.signOut();
-        redirectToLogin();
-    }
+        Toast.makeText(this, "Déconnecté avec succès", Toast.LENGTH_SHORT).show();
 
-    private void redirectToLogin() {
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

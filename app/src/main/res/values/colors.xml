@@ -1,114 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- ========== COULEURS PRINCIPALES ========== -->
 
-    <!-- Rouge Principal - Couleur dominante (style McDonald's/Burger King) -->
+    <!-- Rouge Principal -->
     <color name="primary_red">#E3311D</color>
     <color name="primary_red_dark">#C1270F</color>
     <color name="primary_red_light">#FF5744</color>
 
-    <!-- Jaune/Orange - Couleur secondaire (accent chaleureux) -->
+    <!-- Jaune / Orange -->
     <color name="accent_yellow">#FFBA08</color>
     <color name="accent_orange">#FF9500</color>
     <color name="accent_orange_dark">#E67E00</color>
 
-    <!-- Marron - Pour élégance et sophistication -->
+    <!-- Marron -->
     <color name="brown_primary">#8B4513</color>
     <color name="brown_dark">#5C2E0A</color>
     <color name="brown_light">#A0653A</color>
 
-    <!-- Vert - Pour "frais" et "sain" -->
+    <!-- Vert -->
     <color name="green_fresh">#4CAF50</color>
     <color name="green_dark">#2E7D32</color>
     <color name="green_light">#81C784</color>
 
-    <!-- Dégradé (start et end pour background gradient) -->
+    <!-- Dégradé -->
     <color name="gradient_red_start">#FF4E50</color>
     <color name="gradient_red_end">#F9D423</color>
-
-
 
     <!-- ========== COULEURS DE FOND ========== -->
 
     <color name="background_main">#FFFFFF</color>
-    <color name="background_light">#FFF8F0</color>        <!-- Crème léger -->
-    <color name="background_card">#FFFBF5</color>         <!-- Beige très clair -->
+    <color name="background_light">#FFF8F0</color>
+    <color name="background_card">#FFFBF5</color>
     <color name="background_gray">#F5F5F5</color>
-
+    <color name="background">#FFFFFF</color>
 
     <!-- ========== COULEURS DE TEXTE ========== -->
 
-    <color name="text_primary">#212121</color>            <!-- Noir principal -->
-    <color name="text_secondary">#757575</color>          <!-- Gris moyen -->
-    <color name="text_hint">#BDBDBD</color>               <!-- Gris clair pour hints -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
     <color name="text_white">#FFFFFF</color>
-    <color name="text_on_primary">#FFFFFF</color>         <!-- Texte sur couleur rouge -->
-
+    <color name="text_on_primary">#FFFFFF</color>
 
     <!-- ========== COULEURS D'ÉTAT ========== -->
 
-    <!-- Succès -->
     <color name="success">#4CAF50</color>
     <color name="success_light">#C8E6C9</color>
 
-    <!-- Erreur -->
     <color name="error">#F44336</color>
     <color name="error_light">#FFCDD2</color>
 
-    <!-- Attention/Warning -->
     <color name="warning">#FF9800</color>
     <color name="warning_light">#FFE0B2</color>
 
-    <!-- Info -->
     <color name="info">#2196F3</color>
     <color name="info_light">#BBDEFB</color>
 
+    <!-- ========== BADGES / TAGS ========== -->
 
-    <!-- ========== COULEURS POUR BADGES/TAGS ========== -->
+    <color name="badge_new">#FF5722</color>
+    <color name="badge_popular">#FFC107</color>
+    <color name="badge_promo">#E91E63</color>
+    <color name="badge_vegan">#8BC34A</color>
 
-    <color name="badge_new">#FF5722</color>               <!-- Nouveau plat -->
-    <color name="badge_popular">#FFC107</color>           <!-- Plat populaire -->
-    <color name="badge_promo">#E91E63</color>             <!-- Promotion -->
-    <color name="badge_vegan">#8BC34A</color>             <!-- Végétarien -->
+    <!-- ========== TRANSPARENCE ========== -->
 
+    <color name="overlay_dark">#80000000</color>
+    <color name="overlay_light">#40FFFFFF</color>
+    <color name="ripple_effect">#40FF4E50</color>
 
-    <!-- ========== COULEURS TRANSPARENTES ========== -->
-
-    <color name="overlay_dark">#80000000</color>          <!-- 50% noir -->
-    <color name="overlay_light">#40FFFFFF</color>         <!-- 25% blanc -->
-    <color name="ripple_effect">#40FF4E50</color>         <!-- Effet tactile -->
-
-
-    <!-- ========== SÉPARATEURS & BORDURES ========== -->
+    <!-- ========== BORDURES ========== -->
 
     <color name="divider">#E0E0E0</color>
     <color name="border_light">#EEEEEE</color>
     <color name="border_medium">#BDBDBD</color>
 
+    <!-- ========== MARRAKECH THEME ========== -->
 
-    <!-- ========== COULEURS SPÉCIFIQUES MARRAKECH ========== -->
+    <color name="terracotta">#C65D3B</color>
+    <color name="desert_sand">#EDC9AF</color>
+    <color name="spice_red">#D2691E</color>
+    <color name="mint_tea">#A8E6CF</color>
 
-    <color name="terracotta">#C65D3B</color>              <!-- Terre cuite marocaine -->
-    <color name="desert_sand">#EDC9AF</color>             <!-- Sable du désert -->
-    <color name="spice_red">#D2691E</color>               <!-- Rouge épice -->
-    <color name="mint_tea">#A8E6CF</color>                <!-- Thé à la menthe -->
-
-
-    <!-- ========== MATERIAL DESIGN (compatibilité) ========== -->
+    <!-- ========== MATERIAL DESIGN ========== -->
 
     <color name="colorPrimary">@color/primary_red</color>
     <color name="colorPrimaryDark">@color/primary_red_dark</color>
     <color name="colorAccent">@color/accent_yellow</color>
 
-    <color name="white">#FFFFFF</color>
+    <color name="primary">@color/primary_red</color>
     <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
     <color name="transparent">#00000000</color>
+    <!-- Message utilisateur -->
+    <color name="user_message_bg">@color/primary_red</color>
+    <color name="user_message_text">#FFFFFF</color>
+    <color name="bot_message_bg">#FFFFFF</color>
 
-    <!-- <color name="primary_red">#E53935</color> -->
-    <color name="dark_red">#C62828</color>
-    <color name="text_dark">#333333</color>
-    <color name="text_gray">#666666</color>
-    <color name="text_light_gray">#999999</color>
-    <color name="orange_star">#FFA000</color>
+    <!-- Message bot -->
+    <color name="bot_message_text">#212121</color>
 
 </resources>

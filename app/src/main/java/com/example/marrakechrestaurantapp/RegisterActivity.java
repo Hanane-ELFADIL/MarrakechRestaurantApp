@@ -3,7 +3,7 @@ package com.example.marrakechrestaurantapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
     private MaterialButton btnRegister;
     private TextView tvLogin;
     private ProgressBar progressBar;
+    private CheckBox checkBoxAdmin;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -38,7 +39,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Initialisation Firebase
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance(
+                        "https://marrakechrestaurant-2297e-default-rtdb.europe-west1.firebasedatabase.app")
+                .getReference();
 
         // Initialisation des composants
         initViews();
@@ -53,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         etPhone = findViewById(R.id.etPhone);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        checkBoxAdmin = findViewById(R.id.checkBoxAdmin); // Checkbox admin
         btnRegister = findViewById(R.id.btnRegister);
         tvLogin = findViewById(R.id.tvLogin);
         progressBar = findViewById(R.id.progressBar);
@@ -77,6 +81,8 @@ public class RegisterActivity extends AppCompatActivity {
         String phone = etPhone.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
+        boolean isAdmin = checkBoxAdmin.isChecked(); // Vérifier si admin
+        String role = isAdmin ? "admin" : "user";     // Définir le rôle
 
         // Validation
         if (!validateInputs(fullName, email, phone, password, confirmPassword)) {
@@ -89,8 +95,9 @@ public class RegisterActivity extends AppCompatActivity {
         // Créer l'utilisateur dans Firebase Authentication
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
+                    showLoading(false);
+
                     if (task.isSuccessful()) {
-                        // Inscription réussie
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
                         if (firebaseUser != null) {
@@ -102,19 +109,25 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put("fullName", fullName);
                             userMap.put("email", email);
                             userMap.put("phone", phone);
+                            userMap.put("role", role); // Ajouter le rôle
                             userMap.put("profileImage", "");
                             userMap.put("createdAt", System.currentTimeMillis());
 
                             // Sauvegarder dans Realtime Database
                             mDatabase.child("Users").child(userId).setValue(userMap)
                                     .addOnCompleteListener(dbTask -> {
-                                        showLoading(false);
-
                                         if (dbTask.isSuccessful()) {
                                             Toast.makeText(RegisterActivity.this,
                                                     "Inscription réussie !",
                                                     Toast.LENGTH_SHORT).show();
-                                            goToMainActivity();
+
+                                            // Redirection selon le rôle
+                                            if (role.equals("admin")) {
+                                                startActivity(new Intent(RegisterActivity.this, AdminActivity.class));
+                                            } else {
+                                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                            }
+                                            finish();
                                         } else {
                                             Toast.makeText(RegisterActivity.this,
                                                     "Erreur lors de la sauvegarde des données",
@@ -124,7 +137,6 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     } else {
                         // Échec de l'inscription
-                        showLoading(false);
                         String errorMessage = "Erreur lors de l'inscription";
                         if (task.getException() != null) {
                             errorMessage = task.getException().getMessage();
@@ -138,89 +150,62 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean validateInputs(String fullName, String email, String phone,
                                    String password, String confirmPassword) {
-        // Vérifier le nom complet
         if (TextUtils.isEmpty(fullName)) {
             etFullName.setError("Nom complet requis");
             etFullName.requestFocus();
             return false;
         }
-
         if (fullName.length() < 3) {
             etFullName.setError("Le nom doit contenir au moins 3 caractères");
             etFullName.requestFocus();
             return false;
         }
-
-        // Vérifier email
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Email requis");
             etEmail.requestFocus();
             return false;
         }
-
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.setError("Email invalide");
             etEmail.requestFocus();
             return false;
         }
-
-        // Vérifier téléphone
         if (TextUtils.isEmpty(phone)) {
             etPhone.setError("Téléphone requis");
             etPhone.requestFocus();
             return false;
         }
-
         if (phone.length() < 10) {
             etPhone.setError("Numéro de téléphone invalide");
             etPhone.requestFocus();
             return false;
         }
-
-        // Vérifier mot de passe
         if (TextUtils.isEmpty(password)) {
             etPassword.setError("Mot de passe requis");
             etPassword.requestFocus();
             return false;
         }
-
         if (password.length() < 6) {
             etPassword.setError("Minimum 6 caractères");
             etPassword.requestFocus();
             return false;
         }
-
-        // Vérifier confirmation mot de passe
         if (TextUtils.isEmpty(confirmPassword)) {
             etConfirmPassword.setError("Confirmation requise");
             etConfirmPassword.requestFocus();
             return false;
         }
-
         if (!password.equals(confirmPassword)) {
             etConfirmPassword.setError("Les mots de passe ne correspondent pas");
             etConfirmPassword.requestFocus();
             return false;
         }
-
         return true;
     }
 
     private void showLoading(boolean show) {
-        if (show) {
-            progressBar.setVisibility(View.VISIBLE);
-            btnRegister.setEnabled(false);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            btnRegister.setEnabled(true);
-        }
-    }
-
-    private void goToMainActivity() {
-        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+        progressBar.setVisibility(show ? android.view.View.VISIBLE : android.view.View.GONE);
+        btnRegister.setEnabled(!show);
     }
 
     @Override

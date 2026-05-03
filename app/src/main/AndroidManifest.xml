@@ -1,54 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- Permissions Internet pour Firebase -->
+
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.MarrakechRestaurantApp"
         tools:targetApi="31">
+
+        <!-- PayPal Activity avec Deep Link -->
         <activity
-            android:name=".ForgotPasswordActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
-        <!-- LoginActivity - Écran de démarrage -->
+            android:name=".PayPalActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="marrakechapp" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".HistoriqueCommandesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PanierActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ImageFullScreenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminOrdersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GestionCommandeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminEditRestaurantActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminEditPlatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminPlatsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminRestaurantsActivity"
+            android:exported="false" />
+
+        <!-- Login -->
         <activity
             android:name=".LoginActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- RegisterActivity -->
+        </activity>
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <!-- MainActivity -->
-<!--        <activity-->
-<!--            android:name=".MainActivity"-->
-<!--            android:exported="false"-->
-<!--            android:screenOrientation="portrait" />-->
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.Marrakech.Material" />
-
-        <!-- RestaurantDetailActivity -->
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".RestaurantDetailActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProfileUserActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FavoriteActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ChatbotActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProfileAdminActivity"
+            android:exported="false"
+            android:parentActivityName=".AdminActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

@@ -1,7 +1,8 @@
 package com.example.marrakechrestaurantapp;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,8 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.marrakechrestaurantapp.adapters.PlatAdapter;
-import com.example.marrakechrestaurantapp.models.Plat;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,14 +25,16 @@ import java.util.List;
 
 public class RestaurantDetailActivity extends AppCompatActivity {
 
-    private static final String TAG = "RestaurantDetail";
+    private TextView tvRestaurantName, tvRestaurantCategory, tvRestaurantDescription;
+    private TextView tvDeliveryTime, tvRating, tvEmptyMessage;
+    private ImageView btnBack;
+    private RecyclerView rvPlats;
+    private FloatingActionButton fabChatbot;
 
-    private ImageView imgRestaurant, btnBack;
-    private TextView tvRestaurantName, tvRestaurantDescription, tvRestaurantRating, tvRestaurantDelivery;
-    private RecyclerView recyclerPlats;
-    private PlatAdapter adapter;
+    private DatabaseReference databaseReference;
+    private PlatAdapter platAdapter;
     private List<Plat> platList;
-    private DatabaseReference databaseRef;
+
     private String restaurantId;
 
     @Override
@@ -40,108 +42,102 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_detail);
 
-        // Récupérer les données du restaurant
-        restaurantId = getIntent().getStringExtra("restaurantId");
-        String restaurantName = getIntent().getStringExtra("restaurantName");
-        String restaurantImage = getIntent().getStringExtra("restaurantImage");
-        String restaurantDescription = getIntent().getStringExtra("restaurantDescription");
-        double restaurantRating = getIntent().getDoubleExtra("restaurantRating", 0.0);
-        int restaurantDeliveryTime = getIntent().getIntExtra("restaurantDeliveryTime", 0);
+        // Initialisation Firebase
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        // LOG pour vérifier les données reçues
-        Log.d(TAG, "Restaurant ID: " + restaurantId);
-        Log.d(TAG, "Restaurant Name: " + restaurantName);
+        // Initialisation des vues
+        tvRestaurantName = findViewById(R.id.tvRestaurantName);
+        tvRestaurantCategory = findViewById(R.id.tvRestaurantCategory);
+        tvRestaurantDescription = findViewById(R.id.tvRestaurantDescription);
+        tvDeliveryTime = findViewById(R.id.tvDeliveryTime);
+        tvRating = findViewById(R.id.tvRating);
+        btnBack = findViewById(R.id.btnBack);
+        rvPlats = findViewById(R.id.rvPlats);
+        tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
+        fabChatbot = findViewById(R.id.fabChatbot);
 
-        // Initialiser les vues
-        imgRestaurant = findViewById(R.id.img_restaurant);
-        btnBack = findViewById(R.id.btn_back);
-        tvRestaurantName = findViewById(R.id.tv_restaurant_name);
-        tvRestaurantDescription = findViewById(R.id.tv_restaurant_description);
-        tvRestaurantRating = findViewById(R.id.tv_restaurant_rating);
-        tvRestaurantDelivery = findViewById(R.id.tv_restaurant_delivery);
-        recyclerPlats = findViewById(R.id.recycler_plats);
+        // Récupérer les données du restaurant depuis l'Intent
+        restaurantId = getIntent().getStringExtra("RESTAURANT_ID");
+        String restaurantName = getIntent().getStringExtra("RESTAURANT_NAME");
+        String category = getIntent().getStringExtra("RESTAURANT_CATEGORY");
+        String description = getIntent().getStringExtra("RESTAURANT_DESCRIPTION");
+        int deliveryTime = getIntent().getIntExtra("RESTAURANT_DELIVERY_TIME", 30);
+        double rating = getIntent().getDoubleExtra("RESTAURANT_RATING", 4.0);
 
         // Afficher les informations du restaurant
-        tvRestaurantName.setText(restaurantName);
-        tvRestaurantDescription.setText(restaurantDescription);
-        tvRestaurantRating.setText("★ " + restaurantRating);
-        tvRestaurantDelivery.setText(restaurantDeliveryTime + " min");
+        tvRestaurantName.setText(restaurantName != null ? restaurantName : "Restaurant");
+        tvRestaurantCategory.setText(category != null ? category : "");
+        tvRestaurantDescription.setText(description != null ? description : "");
+        tvDeliveryTime.setText("⏱️ " + deliveryTime + " min");
+        tvRating.setText("⭐ " + rating);
 
-        // Charger l'image depuis drawable
-        int resId = getResources().getIdentifier(
-                restaurantImage,
-                "drawable",
-                getPackageName()
-        );
-        if (resId != 0) {
-            imgRestaurant.setImageResource(resId);
-        } else {
-            Log.e(TAG, "Image non trouvée: " + restaurantImage);
-        }
+        // Configuration du RecyclerView
+        platList = new ArrayList<>();
+        platAdapter = new PlatAdapter(this, platList);
+        rvPlats.setLayoutManager(new LinearLayoutManager(this));
+        rvPlats.setAdapter(platAdapter);
+
+        // Charger les plats depuis Firebase
+        loadPlats();
 
         // Bouton retour
         btnBack.setOnClickListener(v -> finish());
 
-        // Configuration du RecyclerView
-        recyclerPlats.setLayoutManager(new LinearLayoutManager(this));
-        platList = new ArrayList<>();
-        adapter = new PlatAdapter(this, platList, plat -> {
-            Toast.makeText(this, plat.getName() + " ajouté au panier", Toast.LENGTH_SHORT).show();
+        // Bouton Chatbot
+        fabChatbot.setOnClickListener(v -> {
+            Intent intent = new Intent(RestaurantDetailActivity.this, ChatbotActivity.class);
+            startActivity(intent);
         });
-        recyclerPlats.setAdapter(adapter);
-
-        // Charger les plats
-        loadPlats();
     }
 
     private void loadPlats() {
-        Log.d(TAG, "Début chargement des plats pour restaurant: " + restaurantId);
-
-        databaseRef = FirebaseDatabase.getInstance().getReference("plats");
-
-        // LOG de l'URL Firebase
-        Log.d(TAG, "Firebase URL: " + databaseRef.toString());
-
-        Query query = databaseRef.orderByChild("restaurantId").equalTo(restaurantId);
+        Query query = databaseReference.child("plats")
+                .orderByChild("restaurantId")
+                .equalTo(restaurantId);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d(TAG, "onDataChange appelé");
-                Log.d(TAG, "Nombre d'enfants: " + snapshot.getChildrenCount());
-
                 platList.clear();
 
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    Log.d(TAG, "Plat trouvé: " + data.getKey());
+                if (snapshot.exists()) {
+                    for (DataSnapshot platSnapshot : snapshot.getChildren()) {
+                        String id = platSnapshot.getKey();
+                        String name = platSnapshot.child("name").getValue(String.class);
+                        String description = platSnapshot.child("description").getValue(String.class);
 
-                    Plat plat = data.getValue(Plat.class);
-                    if (plat != null) {
-                        Log.d(TAG, "Nom du plat: " + plat.getName());
-                        Log.d(TAG, "Prix: " + plat.getPrice());
+                        // ✅ CORRECTION : Utiliser "imageName" au lieu de "imageUrl"
+                        String imageName = platSnapshot.child("imageName").getValue(String.class);
 
-                        if (plat.isAvailable()) {
-                            platList.add(plat);
-                        }
-                    } else {
-                        Log.e(TAG, "Erreur conversion Plat pour: " + data.getKey());
+                        String category = platSnapshot.child("category").getValue(String.class);
+                        String restId = platSnapshot.child("restaurantId").getValue(String.class);
+
+                        Double price = platSnapshot.child("price").getValue(Double.class);
+                        if (price == null) price = 0.0;
+
+                        // ✅ CORRECTION : Passer imageName au lieu de imageUrl
+                        Plat plat = new Plat(id, name, description, price,
+                                imageName, category, restId);
+                        platList.add(plat);
                     }
-                }
 
-                Log.d(TAG, "Total plats dans la liste: " + platList.size());
-                adapter.notifyDataSetChanged();
+                    platAdapter.notifyDataSetChanged();
 
-                if (platList.isEmpty()) {
-                    Toast.makeText(RestaurantDetailActivity.this,
-                            "Aucun plat disponible pour ce restaurant", Toast.LENGTH_SHORT).show();
-                    Log.w(TAG, "Aucun plat trouvé pour restaurantId: " + restaurantId);
+                    if (platList.isEmpty()) {
+                        tvEmptyMessage.setVisibility(View.VISIBLE);
+                        rvPlats.setVisibility(View.GONE);
+                    } else {
+                        tvEmptyMessage.setVisibility(View.GONE);
+                        rvPlats.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    tvEmptyMessage.setVisibility(View.VISIBLE);
+                    rvPlats.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Erreur Firebase: " + error.getMessage());
-                Log.e(TAG, "Code erreur: " + error.getCode());
                 Toast.makeText(RestaurantDetailActivity.this,
                         "Erreur: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }

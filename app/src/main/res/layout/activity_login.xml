@@ -3,247 +3,175 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="@drawable/bg_restaurant_overlay"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
 
-        <!-- ========== HEADER AVEC DÉGRADÉ ROUGE-ORANGE ========== -->
+        <!-- ========== HEADER ========== -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="@color/primary_red"
-            android:padding="24dp">
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="48dp">
 
-            <!-- Icône Restaurant -->
             <TextView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="🍽️"
-                android:textSize="80sp"
-                android:gravity="center"
-                android:background="@android:color/white"
-                android:elevation="4dp" />
+                android:textSize="70dp"
+                android:layout_marginBottom="16dp" />
 
-            <!-- Titre -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Restaurant Marrakech"
-                android:textSize="26sp"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-
-            <!-- Sous-titre -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Découvrez les saveurs de Marrakech"
-                android:textSize="14sp"
-                android:textColor="@color/white"
-                android:alpha="0.9" />
-
+                android:text="Marrakech Restaurant"
+                android:textSize="28sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:fontFamily="serif"
+                android:shadowColor="#80000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="8"
+                android:layout_marginBottom="24dp" />
         </LinearLayout>
 
-
-        <!-- ========== CARD DE CONNEXION ========== -->
-        <androidx.cardview.widget.CardView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:layout_marginTop="-50dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/white">
+            android:text="Connexion"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:gravity="start"
+            android:layout_marginBottom="24dp"
+            android:shadowColor="#80000000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="4" />
 
+        <!-- ========== FORMULAIRE LOGIN ========== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Champ Email -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/RedOutlinedTextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                app:boxBackgroundMode="outline"
+                app:startIconDrawable="@android:drawable/ic_dialog_email"
+                app:startIconTint="@color/primary_red"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/text_white"
+                    android:textSize="16sp"
+                    android:padding="16dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Champ Mot de passe -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/RedOutlinedTextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mot de passe"
+                app:boxBackgroundMode="outline"
+                app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+                app:startIconTint="@color/primary_red"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/primary_red"
+                android:layout_marginBottom="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="@color/text_white"
+                    android:textSize="16sp"
+                    android:padding="16dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Mot de passe oublié -->
+            <TextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Mot de passe oublié ?"
+                android:textColor="@color/primary_red"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Bouton Login -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Se connecter"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/primary_red"
+                android:textAllCaps="false"
+                app:cornerRadius="28dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Register -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="28dp">
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
 
-                <!-- Titre Connexion -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Connexion"
-                    android:textSize="24sp"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="24dp" />
+                    android:text="Pas de compte ? "
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
 
-
-                <!-- Champ Email -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:boxStrokeColor="@color/primary_red"
-                    app:hintTextColor="@color/primary_red"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Email"
-                        android:inputType="textEmailAddress"
-                        android:textSize="16sp"
-                        android:padding="16dp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <!-- Champ Mot de passe -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:boxStrokeColor="@color/primary_red"
-                    app:hintTextColor="@color/primary_red"
-                    app:passwordToggleEnabled="true"
-                    app:passwordToggleTint="@color/primary_red"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Mot de passe"
-                        android:inputType="textPassword"
-                        android:textSize="16sp"
-                        android:padding="16dp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <!-- Mot de passe oublié -->
                 <TextView
-                    android:id="@+id/tvForgotPassword"
+                    android:id="@+id/tvRegister"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="Mot de passe oublié ?"
+                    android:text="S'inscrire"
                     android:textColor="@color/primary_red"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="24dp"
                     android:clickable="true"
-                    android:focusable="true" />
-
-
-                <!-- Bouton de Connexion -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLogin"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="Se connecter"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:backgroundTint="@color/primary_red"
-                    android:textAllCaps="false"
-                    app:cornerRadius="12dp"
-                    android:elevation="4dp" />
-
-
-                <!-- Séparateur OU -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp">
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1"
-                        android:background="@color/divider" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="OU"
-                        android:textColor="@color/text_hint"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:textSize="14sp" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1"
-                        android:background="@color/divider" />
-
-                </LinearLayout>
-
-
-                <!-- Bouton Google -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnGoogleLogin"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="Continuer avec Google"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp"
-                    android:backgroundTint="@color/white"
-                    app:strokeColor="@color/border_medium"
-                    app:strokeWidth="2dp"
-                    app:cornerRadius="12dp"
-                    android:textAllCaps="false" />
-
-
-                <!-- Lien vers Inscription -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginTop="24dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pas encore de compte ? "
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvRegister"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="S'inscrire"
-                        android:textColor="@color/primary_red"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:clickable="true"
-                        android:focusable="true" />
-
-                </LinearLayout>
-
+                    android:focusable="true"
+                    android:padding="4dp" />
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
-
-        <!-- ProgressBar (loading) -->
         <ProgressBar
             android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp"
             android:visibility="gone"
             android:indeterminateTint="@color/primary_red" />
 
