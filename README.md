@@ -1,6 +1,6 @@
 # 🍽️ Marrakech Restaurants Management Mobile App
 
-## 📱 Overview
+##  Overview
 
 The **Marrakech Restaurant Mobile App** is an Android application developed in Java that enables users to explore, manage, and interact with restaurant data in Marrakech.
 
@@ -8,7 +8,7 @@ This project was developed as part of an academic initiative to demonstrate prac
 
 ---
 
-## 🎯 Objectives
+##  Objectives
 
 * Design and develop a functional Android mobile application
 * Provide an intuitive interface for restaurant exploration
@@ -17,7 +17,7 @@ This project was developed as part of an academic initiative to demonstrate prac
 
 ---
 
-## 🚀 Features
+##  Features
 
 * Display a list of restaurants
 * View detailed information for each restaurant
@@ -28,7 +28,7 @@ This project was developed as part of an academic initiative to demonstrate prac
 ---
 
 
-## 🤖 Chatbot Feature
+##  Chatbot Feature
 
 The application includes an integrated chatbot designed to enhance user experience by:
 
@@ -37,7 +37,7 @@ The application includes an integrated chatbot designed to enhance user experien
 * Providing quick recommendations
 * Improving interaction and accessibility
 
-## 🏗️ Application Architecture
+##  Application Architecture
 
 The application follows a modular Android architecture:
 
@@ -48,7 +48,7 @@ The application follows a modular Android architecture:
 
 ---
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 * **Programming Language**: Java
 * **Framework**: Android SDK
@@ -63,12 +63,12 @@ This project includes screenshots covering all main interfaces, including authen
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/C-Charif/Marrakech_Restaurant_Mobile_App.git
+git clone https://github.com/Hanane-ELFADIL/MarrakechRestaurantApp.git
 ```
 
 ### 2. Open the project
@@ -81,7 +81,7 @@ Use an emulator or a physical Android device.
 
 ---
 
-## 🎓 Learning Outcomes
+##  Learning Outcomes
 
 Through this project, the following skills were developed:
 
@@ -93,6 +93,6 @@ Through this project, the following skills were developed:
 
 ---
 
-## ⭐ Support
+##  Support
 
 If you find this project useful, consider giving it a star on GitHub.
