@@ -1,4 +1,4 @@
-# 🍽️ Marrakech Restaurants Management Mobile App
+#  Marrakech Restaurants Management Mobile App
 
 ##  Overview
 
